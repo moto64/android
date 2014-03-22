@@ -8,17 +8,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/display"
         android:layout_marginTop="10pt"
+        android:id="@+id/buttonSend"
         android:text="@string/sendButton"/>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/buttonSend"
+        android:layout_marginTop="10pt"
+        />
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_below="@id/buttonSend"
+        android:layout_marginTop="10pt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List is Empty" />
 
 </RelativeLayout>

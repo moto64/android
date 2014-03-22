@@ -45,21 +45,20 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        mDisplay = (TextView) findViewById(R.id.display);
 
         context = getApplicationContext();
 
         // Check device for Play Services APK.
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(this);
-            regid = getRegistrationId(context);
-
-            if (regid.isEmpty()) {
-                registerInBackground();
-            }
-        } else {
-            Log.i(TAG, "No valid Google Play Services APK found.");
-        }
+//        if (checkPlayServices()) {
+//            gcm = GoogleCloudMessaging.getInstance(this);
+//            regid = getRegistrationId(context);
+//
+//            if (regid.isEmpty()) {
+//                registerInBackground();
+//            }
+//        } else {
+//            Log.i(TAG, "No valid Google Play Services APK found.");
+//        }
     }
 
     private void registerInBackground() {
