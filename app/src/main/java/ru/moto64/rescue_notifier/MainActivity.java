@@ -25,12 +25,12 @@ public class MainActivity extends Activity {
      * Substitute you own sender ID here. This is the project number you got
      * from the API Console, as described in "Getting Started."
      */
-    String SENDER_ID = "Your-Sender-ID";
+    String SENDER_ID = "ru.moto64.rescue.ID";
 
     /**
      * Tag used on log messages.
      */
-    static final String TAG = "GCMDemo";
+    static final String TAG = "ru.moto64.rescue";
 
     TextView mDisplay;
     GoogleCloudMessaging gcm;
