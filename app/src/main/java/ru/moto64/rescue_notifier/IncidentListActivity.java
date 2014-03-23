@@ -1,20 +1,25 @@
 package ru.moto64.rescue_notifier;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class IncidentListActivity extends Activity {
 
     public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
@@ -40,25 +45,52 @@ public class MainActivity extends Activity {
 
     String regid;
 
+    ArrayAdapter<String> incidentAdapter;
+    IncidentDataBase incident_db_helper;
+    private SQLiteDatabase sqdb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_incident_list);
+
+
+        // Инициализируем наш класс-обёртку
+        incident_db_helper = new IncidentDataBase(this);
+
+        // База нам нужна для записи и чтения
+        sqdb = incident_db_helper.getWritableDatabase();
+
+        // FIXME month > incidents
+        List<Incident> incidents = incident_db_helper.getAllIncidents();
+        List<String> month = new ArrayList<String>();
+
+        while (incidents.iterator().hasNext()) {
+            month.add(incidents.iterator().next().toString());
+        }
+
+
+        incidentAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, month);
+
+        ListView list = (ListView) findViewById(R.id.list);
+        list.setAdapter(incidentAdapter);
+
 
         context = getApplicationContext();
 
         // Check device for Play Services APK.
-//        if (checkPlayServices()) {
-//            gcm = GoogleCloudMessaging.getInstance(this);
-//            regid = getRegistrationId(context);
-//
-//            if (regid.isEmpty()) {
-//                registerInBackground();
-//            }
-//        } else {
-//            Log.i(TAG, "No valid Google Play Services APK found.");
-//        }
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+            regid = getRegistrationId(context);
+
+            if (regid.isEmpty()) {
+                registerInBackground();
+            }
+        } else {
+            Log.i(TAG, "No valid Google Play Services APK found.");
+        }
     }
 
     private void registerInBackground() {
@@ -139,7 +171,7 @@ public class MainActivity extends Activity {
     private SharedPreferences getGCMPreferences(Context context) {
         // This sample app persists the registration ID in shared preferences, but
         // how you store the regID in your app is up to you.
-        return getSharedPreferences(MainActivity.class.getSimpleName(),
+        return getSharedPreferences(IncidentListActivity.class.getSimpleName(),
                 Context.MODE_PRIVATE);
     }
 
