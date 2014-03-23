@@ -8,13 +8,21 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,6 +39,7 @@ public class IncidentListActivity extends Activity {
      * from the API Console, as described in "Getting Started."
      */
     String SENDER_ID = "ru.moto64.rescue.ID";
+    int NOTIFICATION_ID = 101;
 
     /**
      * Tag used on log messages.
@@ -110,6 +119,53 @@ public class IncidentListActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.buttonSend:
+                sendNotification();
+                break;
+            case R.id.buttonFill:
+                fillWithSampleData();
+                break;
+        }
+    }
+
+    private void fillWithSampleData() {
+
+    }
+
+    private void sendNotification() {
+        Context context = getApplicationContext();
+
+        // запускаем URL
+
+        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://moto64.ru/topic7905.html"));
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+        Resources res = context.getResources();
+        Notification.Builder builder = new Notification.Builder(context);
+
+        builder.setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.moto64)
+                        // большая картинка
+                .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.moto64))
+                        //.setTicker(res.getString(R.string.warning)) // текст в строке состояния
+                .setTicker("ДТП 18/09/2013 Suzuki SV400 vs Приора (Новоастраханское ш.с. / ул. Политехническая)")
+                .setWhen(System.currentTimeMillis()) // java.lang.System.currentTimeMillis()
+                .setAutoCancel(true)
+                        //.setContentTitle(res.getString(R.string.notifytitle)) // Заголовок уведомления
+                .setContentTitle("ДТП 18/09/2013 Suzuki SV400 vs Приора (Новоастраханское ш.с. / ул. Политехническая)")
+                        //.setContentText(res.getString(R.string.notifytext))
+                .setContentText("Позвонил друг и сказал что напротив автосалона Mitsubishi авария suzuki и приора, у приоры ободрана левая сторона и оторвано зеркало."); // Текст уведомленимя
+
+
+
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(NOTIFICATION_ID, builder.getNotification());
     }
 
     /**
